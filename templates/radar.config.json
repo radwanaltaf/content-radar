@@ -1,0 +1,46 @@
+{
+  "_readme": "Configuration for content-radar. Run 'npx content-radar check' to validate. Unknown keys are reported rather than ignored, because a typo in a rule name would silently disable a gate you believe is running.",
+
+  "brand": {
+    "name": "",
+    "positioning": "One line. Goes into the brief so a drafting step knows who is speaking."
+  },
+
+  "content": {
+    "articles": "content/articles",
+    "also": [],
+    "clusters": [],
+    "commercialPaths": []
+  },
+
+  "frontmatter": {
+    "required": ["title", "slug", "description", "publishedAt"],
+    "slugField": "slug",
+    "descriptionField": "description",
+    "descriptionLength": [40, 200],
+    "draftField": "draft"
+  },
+
+  "vocabulary": {
+    "_readme": "banned words fail the run wherever they appear. bannedPhrases are [pattern, label] pairs, matched case-insensitively. spelling is 'en-GB', 'en-US' or null.",
+    "banned": [],
+    "bannedPhrases": [],
+    "spelling": null,
+    "alsoSweep": []
+  },
+
+  "rules": {
+    "requireSiblingLink": true,
+    "requireCommercialLink": true,
+    "concessionMarkers": [],
+    "emDashPerWords": 500,
+    "auditStatistics": true
+  },
+
+  "pipeline": {
+    "targets": "content/pipeline/targets.json",
+    "knowledge": "content/pipeline/knowledge.md",
+    "voice": [],
+    "checkCommand": "npx content-radar check"
+  }
+}

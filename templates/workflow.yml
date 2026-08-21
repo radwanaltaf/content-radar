@@ -1,0 +1,86 @@
+name: Content radar
+
+# Cron has no "every 48 hours", so this runs on odd days of the month. That is a
+# 48-hour cadence for all but one gap per month, where a 31st is followed by a
+# 1st and the two runs land a day apart. Not worth engineering around.
+#
+# 06:17 rather than 06:00 on purpose: GitHub's shared cron queue is busiest on
+# the hour and jobs scheduled there are delayed the most.
+on:
+  schedule:
+    - cron: '17 6 1-31/2 * *'
+  workflow_dispatch:
+
+# This workflow deliberately does not write an article.
+#
+# It runs the deterministic half: rotation, selection, and the record of what
+# has already been looked at. Then it opens an issue containing the brief, and a
+# person, or an agent a person started, does the judgement half.
+#
+# The reason for the split is not cost. It is that "read the competition and
+# decide whether we can genuinely beat it" is the step where the answer is
+# sometimes no, and a job that runs unattended will never return no. It will
+# return an article, because that is what it was built to do, and the site fills
+# up with pages nobody would have chosen to write.
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Pick the next target
+        id: radar
+        run: |
+          npx content-radar brief > brief.txt
+          cat brief.txt
+          if head -1 brief.txt | grep -q '^NOTHING DUE'; then
+            echo 'due=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'due=true' >> "$GITHUB_OUTPUT"
+            echo "query=$(sed -n 's/^  query:   //p' brief.txt)" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Raise the brief as an issue
+        if: steps.radar.outputs.due == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QUERY: ${{ steps.radar.outputs.query }}
+        run: |
+          # One open issue at a time. A radar that opens an issue on every run
+          # regardless is a radar you stop reading within a fortnight.
+          OPEN=$(gh issue list --label content-radar --state open --json number --jq 'length')
+          if [ "$OPEN" != "0" ]; then
+            echo 'A content-radar issue is already open. Nothing to do.'
+            exit 0
+          fi
+
+          gh label create content-radar --color 'A4762B' \
+            --description 'Raised by the content radar' 2>/dev/null || true
+
+          {
+            echo 'The radar picked this target because it has gone longest without being looked at.'
+            echo
+            echo '```'
+            cat brief.txt
+            echo '```'
+            echo
+            echo '---'
+            echo
+            echo '**To action it:** run `/content-radar` from a checkout of this repository, or follow the steps above by hand.'
+            echo
+            echo "**To decline it:** if the pages currently ranking for this query are genuinely good, set that target's \`status\` to \`rejected\` in the targets file with the reason, and close this issue. That is a real outcome, and recording it stops the radar suggesting the same query again."
+          } > issue-body.md
+
+          gh issue create \
+            --label content-radar \
+            --title "Content radar: $QUERY" \
+            --body-file issue-body.md

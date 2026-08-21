@@ -1,0 +1,41 @@
+name: Add a content radar target
+description: Propose a query for the content radar to look at
+title: 'Radar target: '
+labels: ['content-radar-target']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        The radar picks the open target that has gone longest without being looked at, finds what currently ranks for it, and briefs something better.
+
+        **Add a target because a gap exists, not because a keyword is available.**
+  - type: input
+    id: query
+    attributes:
+      label: The query
+      description: As a person would type it into a search box.
+    validations:
+      required: true
+  - type: input
+    id: cluster
+    attributes:
+      label: Cluster
+      description: Must match a cluster slug in radar.config.json.
+    validations:
+      required: true
+  - type: textarea
+    id: gap
+    attributes:
+      label: What do you think the ranking pages get wrong?
+      description: A hunch is fine. The radar will check it and is allowed to disagree and reject the target.
+    validations:
+      required: true
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Before you submit
+      options:
+        - label: No existing page on this site already answers this query. Two of our own pages competing for one query loses both.
+          required: true
+        - label: Beating the incumbents does not require a statistic, client name or result we do not have.
+          required: true

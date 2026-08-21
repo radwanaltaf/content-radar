@@ -1,0 +1,27 @@
+{
+  "_readme": [
+    "The radar's work list. One entry per query this project wants to own.",
+    "",
+    "It runs on a schedule, takes the open entry that has gone longest without",
+    "being looked at, finds what currently ranks for it, and briefs something",
+    "better. It never publishes.",
+    "",
+    "Add a target when a query's current top results are weak in a way this",
+    "project can specifically beat. Do not add one because it has volume. A page",
+    "written because the keyword was available is the thing a quality floor",
+    "exists to prevent.",
+    "",
+    "status: 'open' is in rotation. 'done' has an article. 'rejected' means we",
+    "looked and the incumbents were good enough, which is a real outcome worth",
+    "recording so the radar does not suggest it again."
+  ],
+  "targets": [
+    {
+      "query": "replace me with a real query",
+      "cluster": "",
+      "status": "open",
+      "lastChecked": null,
+      "gap": "What you think the pages currently ranking for this get wrong. A hunch is fine; the radar is allowed to disagree and reject it."
+    }
+  ]
+}
