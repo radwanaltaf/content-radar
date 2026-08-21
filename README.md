@@ -85,6 +85,7 @@ Unknown keys **fail** rather than being ignored. A typo in a rule name would oth
     "banned": ["seamless", "robust"],
     "bannedPhrases": [["\\bit'?s not just\\b", "\"it's not just X, it's Y\""]],
     "spelling": "en-GB",              // or "en-US", or null
+    "spellingExceptions": ["Organization"],  // identifiers, case sensitive
     "alsoSweep": ["src"]              // apply the same vocabulary to app source
   },
 
@@ -110,6 +111,12 @@ Unknown keys **fail** rather than being ignored. A typo in a rule name would oth
 `frontmatter.required` applies to `content.articles` only. That is the directory the radar produces, so it carries the full contract. Directories in `content.also` get the prose rules plus the two checks that are true of any frontmatter anywhere: a slug must match its filename, and an unquoted colon breaks YAML.
 
 Requiring an article's fields of a case study would be the package asserting a content model it does not own.
+
+### Spelling exceptions
+
+`spelling` will flag identifiers as misspellings, because `Organization` is a schema.org type and `color` is a CSS property. Every real project hits this within a day.
+
+`spellingExceptions` blanks those terms before the check runs, **case sensitively**, so `Organization` the identifier is exempt and `organization` the word is not. Keep the list short: an escape hatch stops people disabling the whole rule, which is the outcome it exists to prevent.
 
 ## The statistics audit
 

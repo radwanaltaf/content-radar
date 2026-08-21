@@ -22,10 +22,11 @@
   },
 
   "vocabulary": {
-    "_readme": "banned words fail the run wherever they appear. bannedPhrases are [pattern, label] pairs, matched case-insensitively. spelling is 'en-GB', 'en-US' or null.",
+    "_readme": "banned words fail the run wherever they appear. bannedPhrases are [pattern, label] pairs, matched case-insensitively. spelling is 'en-GB', 'en-US' or null. spellingExceptions are identifiers exempt from the spelling rule, case sensitive: schema.org Organization, CSS color, React Fragment.",
     "banned": [],
     "bannedPhrases": [],
     "spelling": null,
+    "spellingExceptions": [],
     "alsoSweep": []
   },
 
