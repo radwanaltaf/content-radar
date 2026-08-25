@@ -13,10 +13,20 @@ The boundary is the point. The step where the honest answer is sometimes *"the i
 
 ## Install
 
+Not on the npm registry. Install from the repository:
+
 ```bash
-npm i -D content-radar
+npm i -D github:radwanaltaf/content-radar
 npx content-radar init
 ```
+
+Pin a tag once there is one, so a project does not silently take a new version:
+
+```bash
+npm i -D github:radwanaltaf/content-radar#v0.1.0
+```
+
+If the repository is private, this works wherever git has your credentials, which is your machine and anywhere you have added a deploy key. In GitHub Actions the checkout token cannot read another private repo, so either add a personal access token as a secret and configure git to use it, or make the repository public. That choice is described at the bottom of this file.
 
 `init` writes six files and skips any that already exist:
 
@@ -143,10 +153,23 @@ Two automatic rejections, both enforced by the issue form:
 
 A target marked `rejected` records that you looked and the incumbents were good enough. That is a real outcome and keeping it stops the radar suggesting the same query again.
 
-## Extracting this package
+## Where this lives
 
-It has no imports outside its own directory and no dependencies, so it lifts cleanly:
+Extracted from the AISynq site with `git subtree split`, which is why the history starts partway through. It has no dependencies and no imports outside its own directory, so it moves cleanly.
+
+**Private or public.** It ships private, because it is a business asset rather than a library, and nothing in it is secret. Two consequences: installing it in GitHub Actions needs a token with read access, and nobody else can use it.
+
+To make it public, which removes the token step and makes it installable anywhere:
+
+```bash
+gh repo edit radwanaltaf/content-radar --visibility public --accept-visibility-change-consequences
+```
+
+Check `content/pipeline/knowledge.md` in any consuming project before doing that. The package itself carries no client information; a consuming project's knowledge file usually does.
+
+**Pushing changes back.** Edit here, commit, and consuming projects pick it up on their next `npm install`. If you would rather keep editing inside the AISynq repo, re-split and force-push:
 
 ```bash
 git subtree split --prefix packages/content-radar -b content-radar
+git push content-radar content-radar:main --force
 ```
